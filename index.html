@@ -12,13 +12,14 @@
     }
     body {
       height: 100vh;
-      background: radial-gradient(circle at top, #ffd1dc 0%, #fff0f5 100%);
+      background: linear-gradient(135deg, #fbc2eb 0%, #a18cd1 100%);
       font-family: 'Quicksand', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
     .hearts {
       position: fixed;
@@ -28,56 +29,64 @@
       z-index: 0;
     }
     .container {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.85);
       border-radius: 25px;
       padding: 30px 25px;
       text-align: center;
-      max-width: 320px;
-      box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
+      max-width: 90%;
+      width: 350px;
+      box-shadow: 0 0 30px rgba(255, 20, 147, 0.4);
       z-index: 2;
       animation: zoomIn 1s ease-out;
     }
     #countdown {
-      font-size: 4rem;
-      color: #d63384;
+      font-size: 4.5rem;
+      color: #fff;
+      text-shadow: 2px 2px 10px #ff69b4;
       margin-bottom: 20px;
-      animation: pop 1s infinite alternate;
+      animation: pulse 1s infinite alternate;
     }
     #message {
       font-family: 'Pacifico', cursive;
-      font-size: 1.6rem;
-      color: #c2185b;
+      font-size: 1.8rem;
+      color: #fff;
+      text-shadow: 2px 2px 10px #ff4081;
       display: none;
       animation: fadeIn 2s ease-in forwards;
     }
     #extraText {
       margin-top: 15px;
-      font-size: 1rem;
-      color: #444;
-      line-height: 1.5;
+      font-size: 1.1rem;
+      color: #fff;
+      text-shadow: 1px 1px 8px #d81b60;
+      line-height: 1.6;
       display: none;
       animation: typeIn 3s steps(50, end) forwards;
       white-space: pre-line;
     }
     button#replay {
-      margin-top: 20px;
-      background: #ff69b4;
+      margin-top: 25px;
+      background: #ff4081;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 1rem;
-      border-radius: 20px;
+      border-radius: 25px;
       color: white;
       cursor: pointer;
       display: none;
-      box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+      transition: background 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+    }
+    button#replay:hover {
+      background: #f50057;
     }
 
-    @keyframes pop {
+    @keyframes pulse {
       from { transform: scale(1); }
-      to { transform: scale(1.08); }
+      to { transform: scale(1.1); }
     }
     @keyframes zoomIn {
-      from { transform: scale(0.8); opacity: 0; }
+      from { transform: scale(0.7); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
     @keyframes fadeIn {
@@ -182,7 +191,7 @@
   }
 
   function createHearts() {
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 50; i++) {
       hearts.push(new Heart());
     }
   }
