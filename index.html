@@ -1,220 +1,263 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Birthday Countdown</title>
-<style>
-  /* Reset */
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
-  body, html {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-  }
-
-  /* Countdown container */
-  #countdown {
-    perspective: 1000px;
-    font-size: 8rem;
-    font-weight: 900;
-    letter-spacing: 0.15em;
-    color: #ff69b4;
-    margin-bottom: 30px;
-    min-height: 140px;
-  }
-
-  /* Flip animation */
-  .flip {
-    display: inline-block;
-    animation: flipIn 0.7s ease forwards;
-    transform-origin: bottom center;
-  }
-
-  @keyframes flipIn {
-    0% {
-      transform: rotateX(90deg);
-      opacity: 0;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ultimate Happy Birthday Countdown 💗</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+    /* Reset */
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
     }
-    100% {
-      transform: rotateX(0deg);
-      opacity: 1;
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #ff9a9e 0%, #fad0c4 100%);
+      font-family: 'Pacifico', cursive;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      user-select: none;
+      text-shadow:
+        0 0 10px #ff69b4,
+        0 0 20px #ff1493,
+        0 0 30px #ff69b4,
+        0 0 40px #ff1493;
     }
-  }
 
-  /* Glowing message container */
-  #message {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: #ff1493;
-    text-align: center;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-    opacity: 0;
-    text-shadow:
-      0 0 8px #ff69b4,
-      0 0 15px #ff1493,
-      0 0 20px #ff1493,
-      0 0 30px #ff69b4,
-      0 0 40px #ff1493;
-  }
-  #message.visible {
-    animation: glowIn 2s ease forwards;
-  }
-  @keyframes glowIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
+    /* Sparkling background canvas */
+    canvas.sparkle {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  /* Typing cursor effect */
-  #message.typing::after {
-    content: '|';
-    animation: blinkCursor 0.7s steps(1) infinite;
-    margin-left: 5px;
-  }
-  @keyframes blinkCursor {
-    0%, 50% {opacity: 1;}
-    51%, 100% {opacity: 0;}
-  }
+    .container {
+      background: rgba(0,0,0,0.25);
+      border-radius: 25px;
+      padding: 40px 60px;
+      box-shadow:
+        0 0 20px 10px rgba(255,105,180,0.4),
+        inset 0 0 15px 5px rgba(255,20,147,0.6);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      width: 320px;
+    }
 
-  /* Button */
-  #replayBtn {
-    margin-top: 40px;
-    padding: 12px 30px;
-    font-size: 1.25rem;
-    font-weight: 600;
-    background: #ff69b4;
-    border: none;
-    border-radius: 30px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 4px 12px #ff69b4aa;
-    transition: background-color 0.3s ease;
-  }
-  #replayBtn:hover {
-    background: #ff1493;
-  }
+    /* Countdown Flip Container */
+    #countdown {
+      font-size: 6rem;
+      line-height: 1;
+      position: relative;
+      perspective: 800px;
+      margin-bottom: 20px;
+      height: 90px;
+    }
 
-  /* Canvases for animations */
-  canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 10;
-  }
-  canvas.sparkles, canvas.confetti, canvas.fireworks, canvas.balloons {
-    mix-blend-mode: screen;
-  }
-</style>
+    .flip-card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #ff69b4;
+      text-shadow:
+        0 0 20px #ff1493,
+        0 0 30px #ff69b4;
+    }
+
+    .flip-card.flipped {
+      transform: rotateX(-180deg);
+    }
+
+    .flip-card .front, .flip-card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flip-card .back {
+      transform: rotateX(180deg);
+      color: #f8bbd0;
+    }
+
+    /* Message with typewriter effect */
+    #message {
+      font-size: 2.2rem;
+      margin-top: 25px;
+      min-height: 70px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 4px solid rgba(255, 20, 147, 0.75);
+      width: 0;
+      animation: typing 4s steps(30, end) forwards, blinkCaret 0.75s step-end infinite;
+      display: none;
+    }
+
+    /* Replay Button */
+    button#replay {
+      margin-top: 30px;
+      background: #ff1493;
+      border: none;
+      padding: 12px 36px;
+      font-size: 1.3rem;
+      border-radius: 35px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 0 30px #ff69b4;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      display: none;
+    }
+    button#replay:hover {
+      background: #ff69b4;
+    }
+
+    /* Animations */
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blinkCaret {
+      50% { border-color: transparent; }
+      100% { border-color: rgba(255, 20, 147, 0.75); }
+    }
+
+  </style>
 </head>
 <body>
 
-<div id="countdown"></div>
-<div id="message"></div>
-<button id="replayBtn">Replay Countdown</button>
+<canvas class="sparkle"></canvas>
 
-<!-- Multiple canvases layered for different particle effects -->
-<canvas class="sparkles"></canvas>
-<canvas class="confetti"></canvas>
-<canvas class="fireworks"></canvas>
-<canvas class="balloons"></canvas>
+<div class="container">
+  <div id="countdown">
+    <div class="flip-card" id="flipCard">
+      <div class="front">10</div>
+      <div class="back">9</div>
+    </div>
+  </div>
+
+  <div id="message">Many more happy returns of the day, baby 💗</div>
+  <button id="replay">Replay Countdown</button>
+</div>
 
 <script>
-(() => {
+  // Flip countdown logic
   const countdownEl = document.getElementById('countdown');
+  const flipCard = document.getElementById('flipCard');
+  const front = flipCard.querySelector('.front');
+  const back = flipCard.querySelector('.back');
   const messageEl = document.getElementById('message');
-  const replayBtn = document.getElementById('replayBtn');
+  const replayBtn = document.getElementById('replay');
 
-  // Countdown start value
-  const START_COUNT = 10;
+  let count = 10;
+  let isFlipping = false;
 
-  // --- Countdown Logic with flip animation ---
-  function animateFlipNumber(num) {
-    countdownEl.textContent = '';
-    const numStr = num.toString();
-
-    // Create span for each digit with flip animation
-    for (const digit of numStr) {
-      const span = document.createElement('span');
-      span.textContent = digit;
-      span.classList.add('flip');
-      countdownEl.appendChild(span);
+  function flipCountdown() {
+    if (count <= 0) {
+      showMessage();
+      return;
     }
+
+    if (isFlipping) return;
+    isFlipping = true;
+
+    back.textContent = count - 1;
+
+    flipCard.classList.add('flipped');
+
+    setTimeout(() => {
+      front.textContent = count - 1;
+      flipCard.classList.remove('flipped');
+      count--;
+      isFlipping = false;
+    }, 600);
   }
 
-  // Typing effect for message
-  function typeMessage(text, callback) {
-    messageEl.textContent = '';
-    messageEl.classList.add('visible', 'typing');
+  function startCountdown() {
+    messageEl.style.display = 'none';
+    replayBtn.style.display = 'none';
+    count = 10;
+    front.textContent = count;
+    back.textContent = count - 1;
 
-    let index = 0;
-    const interval = setInterval(() => {
-      messageEl.textContent += text[index];
-      index++;
-      if (index === text.length) {
-        clearInterval(interval);
-        messageEl.classList.remove('typing');
-        if (callback) callback();
-      }
-    }, 120);
+    countdownInterval = setInterval(() => {
+      flipCountdown();
+      if (count <= 0) clearInterval(countdownInterval);
+    }, 1000);
   }
 
-  // Reset for replay
-  function reset() {
-    messageEl.textContent = '';
-    messageEl.className = '';
-    countdownEl.textContent = '';
+  function showMessage() {
+    countdownEl.style.display = 'none';
+    messageEl.style.display = 'inline-block';
+    replayBtn.style.display = 'inline-block';
+    launchConfetti();
   }
 
-  // --- Particle Animations ---
+  replayBtn.addEventListener('click', () => {
+    countdownEl.style.display = 'block';
+    stopConfetti();
+    startCountdown();
+  });
 
-  // Sparkles (subtle glowing particles)
-  const sparkleCanvas = document.querySelector('canvas.sparkles');
+  // Sparkle background animation
+  const sparkleCanvas = document.querySelector('canvas.sparkle');
   const sparkleCtx = sparkleCanvas.getContext('2d');
   let sparkleParticles = [];
 
+  function resizeCanvas() {
+    sparkleCanvas.width = window.innerWidth;
+    sparkleCanvas.height = window.innerHeight;
+  }
+
   class Sparkle {
     constructor() {
-      this.reset();
-    }
-    reset() {
       this.x = Math.random() * sparkleCanvas.width;
       this.y = Math.random() * sparkleCanvas.height;
-      this.radius = Math.random() * 1.5 + 0.5;
-      this.alpha = Math.random() * 0.5 + 0.3;
-      this.alphaChange = 0.008 + Math.random() * 0.012;
-      this.speedX = (Math.random() - 0.5) * 0.1;
-      this.speedY = (Math.random() - 0.5) * 0.1;
-      this.active = true;
+      this.radius = Math.random() * 1.5 + 0.3;
+      this.alpha = Math.random();
+      this.alphaChange = Math.random() * 0.02 + 0.01;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
     }
+
     update() {
-      if (!this.active) return;
       this.alpha += this.alphaChange;
-      if (this.alpha <= 0.3 || this.alpha >= 0.8) this.alphaChange *= -1;
+      if (this.alpha <= 0) {
+        this.alpha = 0;
+        this.alphaChange = -this.alphaChange;
+      } else if (this.alpha >= 1) {
+        this.alpha = 1;
+        this.alphaChange = -this.alphaChange;
+      }
       this.x += this.speedX;
       this.y += this.speedY;
+
       if (this.x < 0) this.x = sparkleCanvas.width;
-      if (this.x > sparkleCanvas.width) this.x = 0;
+      else if (this.x > sparkleCanvas.width) this.x = 0;
+
       if (this.y < 0) this.y = sparkleCanvas.height;
-      if (this.y > sparkleCanvas.height) this.y = 0;
+      else if (this.y > sparkleCanvas.height) this.y = 0;
     }
+
     draw() {
-      if (!this.active) return;
       sparkleCtx.beginPath();
       sparkleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      sparkleCtx.fillStyle = `rgba(255,105,180,${this.alpha})`;
-      sparkleCtx.shadowColor = `rgba(255,105,180,${this.alpha})`;
+      sparkleCtx.fillStyle = `rgba(255, 105, 180, ${this.alpha})`;
+      sparkleCtx.shadowColor = `rgba(255, 105, 180, ${this.alpha})`;
       sparkleCtx.shadowBlur = 8;
       sparkleCtx.fill();
     }
@@ -222,8 +265,7 @@
 
   function initSparkles() {
     sparkleParticles = [];
-    const count = 60;
-    for(let i=0; i<count; i++) {
+    for(let i=0; i<120; i++) {
       sparkleParticles.push(new Sparkle());
     }
   }
@@ -237,309 +279,127 @@
     requestAnimationFrame(animateSparkles);
   }
 
-  // Confetti
-  const confettiCanvas = document.querySelector('canvas.confetti');
-  const confettiCtx = confettiCanvas.getContext('2d');
-  let confettiParticles = [];
+  // Heart confetti after countdown
+  const confettiCanvas = document.createElement('canvas');
+  confettiCanvas.style.position = 'fixed';
+  confettiCanvas.style.top = '0';
+  confettiCanvas.style.left = '0';
+  confettiCanvas.style.pointerEvents = 'none';
+  confettiCanvas.style.zIndex = '9';
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+  document.body.appendChild(confettiCanvas);
 
-  class ConfettiParticle {
+  const confettiCtx = confettiCanvas.getContext('2d');
+  let confettiPieces = [];
+
+  class ConfettiPiece {
     constructor() {
       this.x = Math.random() * confettiCanvas.width;
       this.y = Math.random() * confettiCanvas.height - confettiCanvas.height;
-      this.size = Math.random() * 7 + 5;
-      this.color = `hsl(${Math.random()*360}, 70%, 60%)`;
-      this.speedY = Math.random() * 4 + 3;
-      this.speedX = (Math.random() - 0.5) * 2;
+      this.size = Math.random() * 12 + 8;
+      this.color = `hsl(${Math.random()*360}, 80%, 70%)`;
+      this.speed = Math.random() * 2 + 1;
+      this.angle = Math.random() * Math.PI * 2;
       this.rotation = Math.random() * 360;
-      this.rotationSpeed = (Math.random() - 0.5) * 10;
-      this.opacity = 1;
-      this.active = true;
+      this.rotationSpeed = (Math.random() - 0.5) * 5;
     }
+
     update() {
-      if (!this.active) return;
-      this.x += this.speedX;
-      this.y += this.speedY;
+      this.y += this.speed;
       this.rotation += this.rotationSpeed;
       if (this.y > confettiCanvas.height) {
         this.y = -this.size;
         this.x = Math.random() * confettiCanvas.width;
       }
     }
+
     draw() {
-      if (!this.active) return;
       confettiCtx.save();
       confettiCtx.translate(this.x, this.y);
       confettiCtx.rotate(this.rotation * Math.PI / 180);
       confettiCtx.fillStyle = this.color;
-      confettiCtx.globalAlpha = this.opacity;
-      confettiCtx.fillRect(-this.size/2, -this.size/4, this.size, this.size/2);
+      drawHeart(confettiCtx, 0, 0, this.size);
       confettiCtx.restore();
     }
   }
 
-  function startConfetti() {
-    confettiParticles = [];
-    const count = 120;
-    for(let i=0; i<count; i++) {
-      confettiParticles.push(new ConfettiParticle());
+  function drawHeart(ctx, x, y, size) {
+    ctx.beginPath();
+    const topCurveHeight = size * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    ctx.bezierCurveTo(
+      x, y,
+      x - size / 2, y,
+      x - size / 2, y + topCurveHeight
+    );
+    ctx.bezierCurveTo(
+      x - size / 2, y + (size + topCurveHeight) / 2,
+      x, y + (size + topCurveHeight) / 1.5,
+      x, y + size
+    );
+    ctx.bezierCurveTo(
+      x, y + (size + topCurveHeight) / 1.5,
+      x + size / 2, y + (size + topCurveHeight) / 2,
+      x + size / 2, y + topCurveHeight
+    );
+    ctx.bezierCurveTo(
+      x + size / 2, y,
+      x, y,
+      x, y + topCurveHeight
+    );
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function initConfetti() {
+    confettiPieces = [];
+    for(let i = 0; i < 70; i++) {
+      confettiPieces.push(new ConfettiPiece());
     }
   }
+
   let confettiRunning = false;
+
+  function launchConfetti() {
+    confettiRunning = true;
+    confettiCanvas.style.display = 'block';
+    initConfetti();
+    animateConfetti();
+  }
+
   function animateConfetti() {
-    if (!confettiRunning) return;
+    if(!confettiRunning) {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiCanvas.style.display = 'none';
+      return;
+    }
     confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    confettiParticles.forEach(p => {
+    confettiPieces.forEach(p => {
       p.update();
       p.draw();
     });
     requestAnimationFrame(animateConfetti);
   }
 
-  function launchConfetti() {
-    confettiRunning = true;
-    startConfetti();
-    animateConfetti();
-    setTimeout(() => {
-      confettiRunning = false;
-      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    }, 8000);
-  }
   function stopConfetti() {
     confettiRunning = false;
-    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
   }
 
-  // Fireworks
-  const fireworksCanvas = document.querySelector('canvas.fireworks');
-  const fireworksCtx = fireworksCanvas.getContext('2d');
-  let fireworks = [];
+  // Initialization
+  resizeCanvas();
+  initSparkles();
+  animateSparkles();
 
-  class Firework {
-    constructor() {
-      this.x = Math.random() * fireworksCanvas.width;
-      this.y = fireworksCanvas.height + 10;
-      this.targetY = Math.random() * (fireworksCanvas.height/2);
-      this.speed = Math.random() * 3 + 3;
-      this.particles = [];
-      this.exploded = false;
-      this.color = `hsl(${Math.random()*360}, 100%, 70%)`;
-    }
-    update() {
-      if (!this.exploded) {
-        this.y -= this.speed;
-        if (this.y <= this.targetY) {
-          this.explode();
-        }
-      } else {
-        this.particles.forEach(p => p.update());
-        this.particles = this.particles.filter(p => p.alpha > 0);
-      }
-    }
-    explode() {
-      this.exploded = true;
-      const count = 30;
-      for(let i=0; i<count; i++) {
-        this.particles.push(new FireworkParticle(this.x, this.y, this.color));
-      }
-    }
-    draw() {
-      if (!this.exploded) {
-        fireworksCtx.beginPath();
-        fireworksCtx.arc(this.x, this.y, 3, 0, Math.PI*2);
-        fireworksCtx.fillStyle = this.color;
-        fireworksCtx.shadowColor = this.color;
-        fireworksCtx.shadowBlur = 10;
-        fireworksCtx.fill();
-      } else {
-        this.particles.forEach(p => p.draw());
-      }
-    }
-    isDead() {
-      return this.exploded && this.particles.length === 0;
-    }
-  }
-
-  class FireworkParticle {
-    constructor(x, y, color) {
-      this.x = x;
-      this.y = y;
-      this.radius = Math.random() * 2 + 1;
-      this.speedX = (Math.random() - 0.5) * 7;
-      this.speedY = (Math.random() - 0.5) * 7;
-      this.alpha = 1;
-      this.color = color;
-      this.gravity = 0.15;
-      this.friction = 0.95;
-    }
-    update() {
-      this.speedX *= this.friction;
-      this.speedY *= this.friction;
-      this.speedY += this.gravity;
-      this.x += this.speedX;
-      this.y += this.speedY;
-      this.alpha -= 0.02;
-      if (this.alpha < 0) this.alpha = 0;
-    }
-    draw() {
-      fireworksCtx.beginPath();
-      fireworksCtx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-      fireworksCtx.fillStyle = `rgba(${hexToRgb(this.color)},${this.alpha})`;
-      fireworksCtx.shadowColor = this.color;
-      fireworksCtx.shadowBlur = 8;
-      fireworksCtx.fill();
-    }
-  }
-
-  function hexToRgb(hsl) {
-    // Use canvas to convert HSL to rgb string
-    const ctx = document.createElement('canvas').getContext('2d');
-    ctx.fillStyle = hsl;
-    return ctx.fillStyle.match(/\d+/g).slice(0,3).join(',');
-  }
-
-  function animateFireworks() {
-    fireworksCtx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
-    fireworks.forEach(fw => {
-      fw.update();
-      fw.draw();
-    });
-    fireworks = fireworks.filter(fw => !fw.isDead());
-    if (fireworks.length < 5 && fireworksRunning) {
-      fireworks.push(new Firework());
-    }
-    requestAnimationFrame(animateFireworks);
-  }
-  let fireworksRunning = false;
-  function startFireworks() {
-    fireworks = [];
-    fireworksRunning = true;
-    fireworks.push(new Firework());
-    animateFireworks();
-    setTimeout(() => {
-      fireworksRunning = false;
-      fireworksCtx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
-    }, 10000);
-  }
-
-  // Balloons
-  const balloonsCanvas = document.querySelector('canvas.balloons');
-  const balloonsCtx = balloonsCanvas.getContext('2d');
-  let balloons = [];
-
-  class Balloon {
-    constructor() {
-      this.x = Math.random() * balloonsCanvas.width;
-      this.y = balloonsCanvas.height + 50 + Math.random() * 100;
-      this.speed = 0.5 + Math.random() * 1;
-      this.size = 30 + Math.random() * 15;
-      this.color = `hsl(${Math.random()*360}, 80%, 60%)`;
-      this.swingAngle = Math.random() * Math.PI * 2;
-      this.swingSpeed = 0.02 + Math.random() * 0.03;
-    }
-    update() {
-      this.y -= this.speed;
-      this.swingAngle += this.swingSpeed;
-      this.x += Math.sin(this.swingAngle) * 0.8;
-      if (this.y + this.size < 0) {
-        this.x = Math.random() * balloonsCanvas.width;
-        this.y = balloonsCanvas.height + 50;
-      }
-    }
-    draw() {
-      // Balloon body (ellipse)
-      balloonsCtx.beginPath();
-      balloonsCtx.ellipse(this.x, this.y, this.size*0.6, this.size, 0, 0, 2*Math.PI);
-      balloonsCtx.fillStyle = this.color;
-      balloonsCtx.shadowColor = this.color;
-      balloonsCtx.shadowBlur = 12;
-      balloonsCtx.fill();
-
-      // Balloon string
-      balloonsCtx.beginPath();
-      balloonsCtx.strokeStyle = '#aaa';
-      balloonsCtx.lineWidth = 1.5;
-      balloonsCtx.moveTo(this.x, this.y + this.size);
-      balloonsCtx.lineTo(this.x, this.y + this.size + 30);
-      balloonsCtx.stroke();
-    }
-  }
-
-  function initBalloons() {
-    balloons = [];
-    for(let i=0; i<20; i++) {
-      balloons.push(new Balloon());
-    }
-  }
-
-  function animateBalloons() {
-    balloonsCtx.clearRect(0, 0, balloonsCanvas.width, balloonsCanvas.height);
-    balloons.forEach(b => {
-      b.update();
-      b.draw();
-    });
-    requestAnimationFrame(animateBalloons);
-  }
-
-  // --- Resize canvases ---
-  function resizeCanvases() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    [sparkleCanvas, confettiCanvas, fireworksCanvas, balloonsCanvas].forEach(c => {
-      c.width = w;
-      c.height = h;
-    });
-  }
   window.addEventListener('resize', () => {
-    resizeCanvases();
+    resizeCanvas();
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
   });
 
-  // --- Main flow ---
-  async function startCountdown() {
-    reset();
-    resizeCanvases();
-
-    // Sparkles always on
-    initSparkles();
-    animateSparkles();
-
-    // Countdown from 10 to 1 with flip animation
-    for (let i = START_COUNT; i >= 1; i--) {
-      animateFlipNumber(i);
-      await new Promise(r => setTimeout(r, 1000));
-    }
-
-    // Show birthday message with typing effect
-    countdownEl.textContent = '';
-    const birthdayMsg = "HAPPY BIRTHDAY!! 🎉🎂🎈";
-
-    typeMessage(birthdayMsg, () => {
-      // Start confetti, fireworks, balloons animations simultaneously
-      launchConfetti();
-      startFireworks();
-      initBalloons();
-      animateBalloons();
-    });
-  }
-
-  replayBtn.addEventListener('click', () => {
-    // Stop all animations by clearing canvases and resetting states
-    confettiRunning = false;
-    fireworksRunning = false;
-    sparkleParticles.forEach(p => p.active = false);
-    confettiParticles.forEach(p => p.active = false);
-    fireworks = [];
-    balloons = [];
-    messageEl.textContent = '';
-    messageEl.className = '';
-    countdownEl.textContent = '';
-    startCountdown();
-  });
-
-  // Start countdown on page load
+  let countdownInterval;
   startCountdown();
 
-})();
 </script>
-
 </body>
 </html>
