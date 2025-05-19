@@ -1,299 +1,405 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Happy Birthday 💗</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ultimate Happy Birthday Countdown 💗</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+    /* Reset */
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+    }
 
-  body {
-    margin: 0;
-    padding: 0;
-    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Pacifico', cursive;
-    overflow: hidden;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255 105 180 / 0.7);
-    flex-direction: column;
-  }
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #ff9a9e 0%, #fad0c4 100%);
+      font-family: 'Pacifico', cursive;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      user-select: none;
+      text-shadow:
+        0 0 10px #ff69b4,
+        0 0 20px #ff1493,
+        0 0 30px #ff69b4,
+        0 0 40px #ff1493;
+    }
 
-  .container {
-    background: rgba(0,0,0,0.4);
-    padding: 40px 60px;
-    border-radius: 30px;
-    box-shadow: 0 0 50px #ff69b4;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
+    /* Sparkling background canvas */
+    canvas.sparkle {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .countdown-wrapper {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 20px;
-  }
+    .container {
+      background: rgba(0,0,0,0.25);
+      border-radius: 25px;
+      padding: 40px 60px;
+      box-shadow:
+        0 0 20px 10px rgba(255,105,180,0.4),
+        inset 0 0 15px 5px rgba(255,20,147,0.6);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      width: 320px;
+    }
 
-  svg {
-    position: absolute;
-    top: 0; left: 0;
-    transform: rotate(-90deg);
-    width: 200px;
-    height: 200px;
-  }
+    /* Countdown Flip Container */
+    #countdown {
+      font-size: 6rem;
+      line-height: 1;
+      position: relative;
+      perspective: 800px;
+      margin-bottom: 20px;
+      height: 90px;
+    }
 
-  circle {
-    fill: none;
-    stroke-width: 15;
-    stroke-linecap: round;
-  }
+    .flip-card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #ff69b4;
+      text-shadow:
+        0 0 20px #ff1493,
+        0 0 30px #ff69b4;
+    }
 
-  .progress-bg {
-    stroke: #ffb6c1;
-  }
+    .flip-card.flipped {
+      transform: rotateX(-180deg);
+    }
 
-  .progress-bar {
-    stroke: #ff1493;
-    stroke-dasharray: 565.48; /* circumference */
-    stroke-dashoffset: 565.48;
-    transition: stroke-dashoffset 0.4s ease;
-  }
+    .flip-card .front, .flip-card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  #countdown {
-    font-size: 5rem;
-    line-height: 200px;
-    font-weight: bold;
-    user-select: none;
-    position: relative;
-    z-index: 5;
-    text-shadow: 0 0 10px #ff69b4;
-  }
+    .flip-card .back {
+      transform: rotateX(180deg);
+      color: #f8bbd0;
+    }
 
-  #message {
-    font-size: 2rem;
-    display: none;
-    margin-top: 20px;
-    animation: fadeIn 2s ease forwards;
-  }
+    /* Message with typewriter effect */
+    #message {
+      font-size: 2.2rem;
+      margin-top: 25px;
+      min-height: 70px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 4px solid rgba(255, 20, 147, 0.75);
+      width: 0;
+      animation: typing 4s steps(30, end) forwards, blinkCaret 0.75s step-end infinite;
+      display: none;
+    }
 
-  button#replay {
-    margin-top: 30px;
-    background: #ff69b4;
-    border: none;
-    padding: 10px 30px;
-    font-size: 1.2rem;
-    border-radius: 30px;
-    cursor: pointer;
-    color: white;
-    box-shadow: 0 0 20px #ff1493;
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
-  button#replay:hover {
-    background: #ff1493;
-  }
+    /* Replay Button */
+    button#replay {
+      margin-top: 30px;
+      background: #ff1493;
+      border: none;
+      padding: 12px 36px;
+      font-size: 1.3rem;
+      border-radius: 35px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 0 30px #ff69b4;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      display: none;
+    }
+    button#replay:hover {
+      background: #ff69b4;
+    }
 
-  canvas.confetti {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 1;
-  }
+    /* Animations */
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blinkCaret {
+      50% { border-color: transparent; }
+      100% { border-color: rgba(255, 20, 147, 0.75); }
+    }
 
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(30px);}
-    to {opacity: 1; transform: translateY(0);}
-  }
-
-  @keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-</style>
+  </style>
 </head>
 <body>
 
-<canvas class="confetti"></canvas>
+<canvas class="sparkle"></canvas>
 
 <div class="container">
-  <div class="countdown-wrapper">
-    <svg>
-      <circle class="progress-bg" cx="100" cy="100" r="90" />
-      <circle class="progress-bar" cx="100" cy="100" r="90" />
-    </svg>
-    <div id="countdown">10</div>
+  <div id="countdown">
+    <div class="flip-card" id="flipCard">
+      <div class="front">10</div>
+      <div class="back">9</div>
+    </div>
   </div>
 
   <div id="message">Many more happy returns of the day, baby 💗</div>
-  <button id="replay" style="display:none;">Replay Countdown</button>
+  <button id="replay">Replay Countdown</button>
 </div>
 
 <script>
+  // Flip countdown logic
   const countdownEl = document.getElementById('countdown');
+  const flipCard = document.getElementById('flipCard');
+  const front = flipCard.querySelector('.front');
+  const back = flipCard.querySelector('.back');
   const messageEl = document.getElementById('message');
   const replayBtn = document.getElementById('replay');
-  const progressBar = document.querySelector('.progress-bar');
-  const canvas = document.querySelector('canvas.confetti');
-  const ctx = canvas.getContext('2d');
 
-  // Set your birthday date/time here: 
-  // Example: new Date(2025, 6, 19, 0, 0, 0); // July 19, 2025 midnight
-  // For demo purposes, countdown from 10 seconds from page load:
-  let countdownSeconds = 10;
-  let birthdayDate = new Date(new Date().getTime() + countdownSeconds * 1000);
+  let count = 10;
+  let isFlipping = false;
 
-  // Progress circle setup
-  const radius = 90;
-  const circumference = 2 * Math.PI * radius;
-  progressBar.style.strokeDasharray = circumference;
-
-  let countdownInterval;
-  let isCounting = false;
-
-  function updateCountdown() {
-    const now = new Date();
-    let diff = birthdayDate - now;
-    if (diff < 0) diff = 0;
-
-    const seconds = Math.ceil(diff / 1000);
-    countdownEl.textContent = seconds;
-
-    // Update progress circle
-    const progress = seconds / countdownSeconds;
-    const offset = circumference * (1 - progress);
-    progressBar.style.strokeDashoffset = offset;
-
-    // Pop animation
-    countdownEl.style.animation = 'none';
-    void countdownEl.offsetWidth; // trigger reflow
-    countdownEl.style.animation = 'pop 0.5s ease';
-
-    if (diff <= 0) {
-      clearInterval(countdownInterval);
-      isCounting = false;
-      countdownEl.style.display = 'none';
-      messageEl.style.display = 'block';
-      replayBtn.style.display = 'inline-block';
-      launchConfetti();
+  function flipCountdown() {
+    if (count <= 0) {
+      showMessage();
+      return;
     }
+
+    if (isFlipping) return;
+    isFlipping = true;
+
+    back.textContent = count - 1;
+
+    flipCard.classList.add('flipped');
+
+    setTimeout(() => {
+      front.textContent = count - 1;
+      flipCard.classList.remove('flipped');
+      count--;
+      isFlipping = false;
+    }, 600);
   }
 
-  // Replay countdown
-  replayBtn.addEventListener('click', () => {
-    if (isCounting) return; // prevent multiple starts
-    birthdayDate = new Date(new Date().getTime() + countdownSeconds * 1000);
-    countdownEl.style.display = 'block';
+  function startCountdown() {
     messageEl.style.display = 'none';
     replayBtn.style.display = 'none';
-    progressBar.style.strokeDashoffset = circumference;
-    launchConfettiStop();
+    count = 10;
+    front.textContent = count;
+    back.textContent = count - 1;
+
+    countdownInterval = setInterval(() => {
+      flipCountdown();
+      if (count <= 0) clearInterval(countdownInterval);
+    }, 1000);
+  }
+
+  function showMessage() {
+    countdownEl.style.display = 'none';
+    messageEl.style.display = 'inline-block';
+    replayBtn.style.display = 'inline-block';
+    launchConfetti();
+  }
+
+  replayBtn.addEventListener('click', () => {
+    countdownEl.style.display = 'block';
+    stopConfetti();
     startCountdown();
   });
 
-  function startCountdown() {
-    if (isCounting) return;
-    isCounting = true;
-    updateCountdown();
-    countdownInterval = setInterval(updateCountdown, 250);
-  }
-
-  // Confetti animation setup
-  let confettiPieces = [];
-  let animationFrameId;
-  const colors = ['#ff9a9e', '#fad0c4', '#fbc2eb', '#a18cd1', '#f6d365', '#ff1493'];
+  // Sparkle background animation
+  const sparkleCanvas = document.querySelector('canvas.sparkle');
+  const sparkleCtx = sparkleCanvas.getContext('2d');
+  let sparkleParticles = [];
 
   function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    sparkleCanvas.width = window.innerWidth;
+    sparkleCanvas.height = window.innerHeight;
   }
 
-  function createConfetti() {
-    confettiPieces = [];
-    for (let i = 0; i < 150; i++) {
-      confettiPieces.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 6 + 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        velocity: Math.random() * 2 + 1,
-        angle: Math.random() * Math.PI * 2,
-        shape: Math.random() < 0.5 ? 'circle' : 'heart',
-        rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 5,
-      });
+  class Sparkle {
+    constructor() {
+      this.x = Math.random() * sparkleCanvas.width;
+      this.y = Math.random() * sparkleCanvas.height;
+      this.radius = Math.random() * 1.5 + 0.3;
+      this.alpha = Math.random();
+      this.alphaChange = Math.random() * 0.02 + 0.01;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+    }
+
+    update() {
+      this.alpha += this.alphaChange;
+      if (this.alpha <= 0) {
+        this.alpha = 0;
+        this.alphaChange = -this.alphaChange;
+      } else if (this.alpha >= 1) {
+        this.alpha = 1;
+        this.alphaChange = -this.alphaChange;
+      }
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (this.x < 0) this.x = sparkleCanvas.width;
+      else if (this.x > sparkleCanvas.width) this.x = 0;
+
+      if (this.y < 0) this.y = sparkleCanvas.height;
+      else if (this.y > sparkleCanvas.height) this.y = 0;
+    }
+
+    draw() {
+      sparkleCtx.beginPath();
+      sparkleCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      sparkleCtx.fillStyle = `rgba(255, 105, 180, ${this.alpha})`;
+      sparkleCtx.shadowColor = `rgba(255, 105, 180, ${this.alpha})`;
+      sparkleCtx.shadowBlur = 8;
+      sparkleCtx.fill();
     }
   }
 
-  // Draw heart shape function
-  function drawHeart(ctx, x, y, size) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.translate(x, y);
-    ctx.scale(size / 10, size / 10);
-    ctx.rotate(Math.PI / 4);
-    ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(0, -3, -5, -3, -5, 0);
-    ctx.bezierCurveTo(-5, 3, 0, 5, 0, 7);
-    ctx.bezierCurveTo(0, 5, 5, 3, 5, 0);
-    ctx.bezierCurveTo(5, -3, 0, -3, 0, 0);
-    ctx.fill();
-    ctx.restore();
+  function initSparkles() {
+    sparkleParticles = [];
+    for(let i=0; i<120; i++) {
+      sparkleParticles.push(new Sparkle());
+    }
   }
 
-  function drawConfetti() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    confettiPieces.forEach(p => {
-      ctx.save();
-      ctx.fillStyle = p.color;
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation * Math.PI / 180);
-
-      if (p.shape === 'heart') {
-        drawHeart(ctx, 0, 0, p.radius * 2);
-      } else {
-        ctx.beginPath();
-        ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.restore();
-
-      p.y += p.velocity;
-      p.rotation += p.rotationSpeed;
-
-      if (p.y > canvas.height) {
-        p.y = 0;
-        p.x = Math.random() * canvas.width;
-      }
+  function animateSparkles() {
+    sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+    sparkleParticles.forEach(p => {
+      p.update();
+      p.draw();
     });
-    animationFrameId = requestAnimationFrame(drawConfetti);
+    requestAnimationFrame(animateSparkles);
   }
+
+  // Heart confetti after countdown
+  const confettiCanvas = document.createElement('canvas');
+  confettiCanvas.style.position = 'fixed';
+  confettiCanvas.style.top = '0';
+  confettiCanvas.style.left = '0';
+  confettiCanvas.style.pointerEvents = 'none';
+  confettiCanvas.style.zIndex = '9';
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+  document.body.appendChild(confettiCanvas);
+
+  const confettiCtx = confettiCanvas.getContext('2d');
+  let confettiPieces = [];
+
+  class ConfettiPiece {
+    constructor() {
+      this.x = Math.random() * confettiCanvas.width;
+      this.y = Math.random() * confettiCanvas.height - confettiCanvas.height;
+      this.size = Math.random() * 12 + 8;
+      this.color = `hsl(${Math.random()*360}, 80%, 70%)`;
+      this.speed = Math.random() * 2 + 1;
+      this.angle = Math.random() * Math.PI * 2;
+      this.rotation = Math.random() * 360;
+      this.rotationSpeed = (Math.random() - 0.5) * 5;
+    }
+
+    update() {
+      this.y += this.speed;
+      this.rotation += this.rotationSpeed;
+      if (this.y > confettiCanvas.height) {
+        this.y = -this.size;
+        this.x = Math.random() * confettiCanvas.width;
+      }
+    }
+
+    draw() {
+      confettiCtx.save();
+      confettiCtx.translate(this.x, this.y);
+      confettiCtx.rotate(this.rotation * Math.PI / 180);
+      confettiCtx.fillStyle = this.color;
+      drawHeart(confettiCtx, 0, 0, this.size);
+      confettiCtx.restore();
+    }
+  }
+
+  function drawHeart(ctx, x, y, size) {
+    ctx.beginPath();
+    const topCurveHeight = size * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    ctx.bezierCurveTo(
+      x, y,
+      x - size / 2, y,
+      x - size / 2, y + topCurveHeight
+    );
+    ctx.bezierCurveTo(
+      x - size / 2, y + (size + topCurveHeight) / 2,
+      x, y + (size + topCurveHeight) / 1.5,
+      x, y + size
+    );
+    ctx.bezierCurveTo(
+      x, y + (size + topCurveHeight) / 1.5,
+      x + size / 2, y + (size + topCurveHeight) / 2,
+      x + size / 2, y + topCurveHeight
+    );
+    ctx.bezierCurveTo(
+      x + size / 2, y,
+      x, y,
+      x, y + topCurveHeight
+    );
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function initConfetti() {
+    confettiPieces = [];
+    for(let i = 0; i < 70; i++) {
+      confettiPieces.push(new ConfettiPiece());
+    }
+  }
+
+  let confettiRunning = false;
 
   function launchConfetti() {
-    resizeCanvas();
-    createConfetti();
-    drawConfetti();
+    confettiRunning = true;
+    confettiCanvas.style.display = 'block';
+    initConfetti();
+    animateConfetti();
   }
 
-  function launchConfettiStop() {
-    cancelAnimationFrame(animationFrameId);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  function animateConfetti() {
+    if(!confettiRunning) {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiCanvas.style.display = 'none';
+      return;
+    }
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    confettiPieces.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateConfetti);
   }
+
+  function stopConfetti() {
+    confettiRunning = false;
+  }
+
+  // Initialization
+  resizeCanvas();
+  initSparkles();
+  animateSparkles();
 
   window.addEventListener('resize', () => {
     resizeCanvas();
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
   });
 
-  // Start countdown on load
+  let countdownInterval;
   startCountdown();
+
 </script>
 </body>
 </html>
